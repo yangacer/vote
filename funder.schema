@@ -1,0 +1,24 @@
+CREATE TABLE tbl_all(
+  "營業地址" TEXT,
+  "funder_id" TEXT,
+  "總機構統一編號" TEXT,
+  "營業人名稱" TEXT,
+  "資本額" TEXT,
+  "設立日期" TEXT,
+  "組織別名稱" TEXT,
+  "使用統一發票" TEXT,
+  "行業代號" TEXT,
+  "名稱" TEXT,
+  "行業代號1" TEXT,
+  "名稱1" TEXT,
+  "行業代號2" TEXT,
+  "名稱2" TEXT,
+  "行業代號3" TEXT,
+  "名稱3" TEXT
+);
+CREATE TABLE tbl_funder(
+  "funder_id" TEXT
+);
+CREATE INDEX idx_funder on tbl_all (funder_id);
+CREATE VIEW view_funder_with_code as select tbl_all.funder_id, tbl_all."營業人名稱" as name, tbl_all."行業代號" as code_0, tbl_all."行業代號1" as code_1, tbl_all."行業代號2" as code_2, tbl_all."行業代號3" as code_3  from tbl_funder join tbl_all using (funder_id)
+/* view_funder_with_code(funder_id,name,code_0,code_1,code_2,code_3) */;

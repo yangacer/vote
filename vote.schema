@@ -1,0 +1,32 @@
+CREATE TABLE tbl_all(
+  "candidate" TEXT,
+  "election" TEXT,
+  "serail" TEXT,
+  "transaction_date" TEXT,
+  "account" TEXT,
+  "funder" TEXT,
+  "founder_id" TEXT,
+  "amount" NUM,
+  "is_cash" TEXT,
+  "address" TEXT,
+  "phone" TEXT,
+  "region" TEXT,
+  "year" NUM
+);
+CREATE VIEW view_year_amount as select election, region, candidate, sum(amount) as year_amount from tbl_all group by candidate, region, year order by election ASC, region, year_amount DESC
+/* view_year_amount(election,region,candidate,year_amount) */;
+CREATE VIEW view_with_account as select election, region, candidate, account, founder_id, sum(amount) as year_amount from tbl_all group by candidate, account, region, year order by election ASC, candidate, year_amount DESC
+/* view_with_account(election,region,candidate,account,founder_id,year_amount) */;
+CREATE VIEW view_account_fraction as select t1.election, t1.region, t1.candidate, t1.year_amount as total_funding, t2.account, t2.year_amount as partial_funding, t2.year_amount * 100.0 / t1.year_amount as fraction from view_with_account as t2 join view_year_amount as t1 using (election, candidate) order by t1.election, t1.candidate
+/* view_account_fraction(election,region,candidate,total_funding,account,partial_funding,fraction) */;
+CREATE INDEX index_funder on tbl_all (funder, founder_id);
+CREATE INDEX index_region on tbl_all (region);
+CREATE TABLE tbl_candidates(
+  "region" TEXT,
+  "candidate" TEXT,
+  "推薦政黨" TEXT,
+  "得票數" TEXT,
+  "得票率" TEXT,
+  "elected" TEXT,
+  "是否現任" TEXT
+);
