@@ -15,7 +15,7 @@ region_code_ = {
   '66000': '台中',
   '67000': '台南',
   '68000': '桃園',
-  '10001': '台北',
+  '10001': '新北',
   '10002': '宜蘭',
   '10003': '桃園',
   '10004': '新竹縣',
@@ -39,7 +39,7 @@ region_code_ = {
 
 # per 主計處營業項目分類 "中類"
 # see https://www.dgbas.gov.tw/public/Attachment/9916134443W75YTOW0.pdf
-constructer_codes_ = (41, 42, 43, 71)
+constructer_codes_ = ('06', '41', '42', '43', '67', '68', '71')
 
 constructer_funders_ = set()
 constructer_fundings_ = dict()
@@ -59,19 +59,19 @@ def getArgs():
   parser.add_argument('dir', nargs='?', help='Directory contains election reports')
   parser.add_argument('--tax-id', '-t', action='store_true', help='Print tax ID list')
   parser.add_argument('--funder-csv', '-m', help='CVS contains founder data. e.g. data/funder_with_code.csv. Augment `account` fields if used with |dir|')
-  parser.add_argument('--list-constructors', '-l', action='store_true', help='List funders categorized as constructers then exit. Require --funder-csv argument')
+  parser.add_argument('--list-constructers', '-l', action='store_true', help='List funders categorized as constructers then exit. Require --funder-csv argument')
   parser.add_argument('--pivot-accounts', '-p', help='Pivot accounts as column headers from input csv')
   parser.add_argument('--preprocess-election-report', '-e')
   return parser.parse_args()
 
 def populate_constructer_info(funder_csv, print_to_stdout):
-  with open(args.funder_csv) as f:
+  with open(funder_csv) as f:
     f.readline() # skip header
     for line in f:
       id, name, codes = line.split(',', 2)
       codes = codes.split(',')
       for c in codes:
-        if len(c) > 2 and int(c[0:2]) in constructer_codes_:
+        if len(c) > 2 and c[0:2] in constructer_codes_:
           if print_to_stdout:
             print ','.join((id, name))
           else:
@@ -115,7 +115,7 @@ def aggregate_incomes(work_dir, print_tax_id_only):
           print '{},{},{}'.format(','.join(cols), region_code_[region], year)
         else:
           if funder_id.isdigit():
-            print founder_id
+            print funder_id
 
 def pivot_accounts(csv_file):
   with open(csv_file) as f:
