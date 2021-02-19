@@ -30,3 +30,5 @@ CREATE TABLE tbl_candidates(
   "elected" TEXT,
   "是否現任" TEXT
 );
+CREATE VIEW view_region_account_fraction as select region, account, sum(amount) from tbl_all group by account, region order by region, account
+/* view_region_account_fraction(region,account,"sum(amount)") */;
